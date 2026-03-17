@@ -1,4 +1,4 @@
-name: Fetch HDNEA Token
+name: Fetch HDNEA Token from M3U
 
 on:
   schedule:
@@ -17,36 +17,31 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Install jq
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y jq
-
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.x"
 
-      - name: Fetch HDNEA Token
+      - name: Fetch M3U & Extract Token
         env:
-          COOKIE_JSON_URL: ${{ secrets.HDNEA_JSON_URL }}
+          M3U_URL: ${{ secrets.M3U_URL }}
         run: |
 
-          echo "Fetching token..."
+          echo "Downloading M3U..."
 
-          response=$(curl -s "$COOKIE_JSON_URL")
+          curl -s "$M3U_URL" -o source.m3u
 
-          token=$(echo "$response" | jq -r '.[0].cookie' | sed 's/^__hdnea__=//')
+          token=$(grep -o '__hdnea__=[^&]*' source.m3u | head -n 1)
 
-          if [ -z "$token" ] || [ "$token" = "null" ]; then
-            echo "Token fetch failed"
+          if [ -z "$token" ]; then
+            echo "Token not found"
             exit 1
           fi
 
-          echo "__hdnea__=$token" > fetch.txt
-          echo "Token saved"
+          echo "$token" > fetch.txt
+          echo "Token extracted: $token"
 
-      - name: Update M3U File
+      - name: Update Local M3U
         run: python append_hdnea_m3u.py
 
       - name: Commit and Push
@@ -62,5 +57,5 @@ jobs:
             exit 0
           fi
 
-          git commit -m "Auto update HDNEA token"
+          git commit -m "Auto update HDNEA token from M3U"
           git push
