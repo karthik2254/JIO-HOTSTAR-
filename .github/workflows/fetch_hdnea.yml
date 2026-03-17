@@ -1,4 +1,4 @@
-name: Fetch HDNEA Token from M3U
+name: Auto Update HDNEA Token from M3U
 
 on:
   schedule:
@@ -9,12 +9,12 @@ permissions:
   contents: write
 
 jobs:
-  fetch-token:
+  update-token:
     runs-on: ubuntu-latest
 
     steps:
 
-      - name: Checkout Repository
+      - name: Checkout Repo
         uses: actions/checkout@v4
 
       - name: Setup Python
@@ -22,29 +22,30 @@ jobs:
         with:
           python-version: "3.x"
 
-      - name: Fetch M3U & Extract Token
+      - name: Download Source M3U & Extract Token
         env:
           M3U_URL: ${{ secrets.M3U_URL }}
         run: |
 
-          echo "Downloading M3U..."
-
+          echo "Downloading source playlist..."
           curl -s "$M3U_URL" -o source.m3u
+
+          echo "Extracting token..."
 
           token=$(grep -o '__hdnea__=[^&]*' source.m3u | head -n 1)
 
           if [ -z "$token" ]; then
-            echo "Token not found"
+            echo "❌ Token not found"
             exit 1
           fi
 
           echo "$token" > fetch.txt
-          echo "Token extracted: $token"
+          echo "✅ Token: $token"
 
-      - name: Update Local M3U
+      - name: Update channels.m3u
         run: python append_hdnea_m3u.py
 
-      - name: Commit and Push
+      - name: Commit & Push Changes
         run: |
 
           git config --global user.name "github-actions"
@@ -57,5 +58,5 @@ jobs:
             exit 0
           fi
 
-          git commit -m "Auto update HDNEA token from M3U"
+          git commit -m "Auto update HDNEA token"
           git push
