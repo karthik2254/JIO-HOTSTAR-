@@ -28,7 +28,7 @@ jobs:
         run: |
 
           echo "Downloading source playlist..."
-          curl -s "$M3U_URL" -o source.m3u
+          curl -L -s "$M3U_URL" -o source.m3u
 
           echo "Extracting token..."
 
