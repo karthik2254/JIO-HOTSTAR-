@@ -26,7 +26,6 @@ jobs:
         env:
           M3U_URL: ${{ secrets.M3U_URL }}
         run: |
-
           echo "Downloading source playlist..."
           curl -L -s "$M3U_URL" -o source.m3u
 
@@ -47,7 +46,6 @@ jobs:
 
       - name: Commit & Push Changes
         run: |
-
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
 
