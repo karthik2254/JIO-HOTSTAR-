@@ -1,29 +1,37 @@
 import re
 
 # Read token
-with open("fetch.txt") as f:
+with open("fetch.txt", "r") as f:
     token = f.read().strip()
 
-# Read cookie
-try:
-    with open("cookie.txt") as f:
-        cookie = f.read().strip()
-except:
-    cookie = ""
+# Read existing playlist
+with open("channels.m3u", "r", encoding="utf-8") as f:
+    content = f.read()
 
-# Read M3U
-with open("channels.m3u", "r") as f:
-    data = f.read()
+# Replace old token or append if missing
+def update_url(match):
+    url = match.group(0)
 
-# Replace old token
-data = re.sub(r'__hdnea__=[^"& ]+', token, data)
+    # Remove old token if exists
+    url = re.sub(r'__hdnea__=[^&]*', '', url)
 
-# Add cookie if exists
-if cookie:
-    data = re.sub(r'#EXTINF:-1', f'#EXTINF:-1\n#EXTVLCOPT:http-cookie={cookie}', data)
+    # Clean trailing symbols
+    if url.endswith('?') or url.endswith('&'):
+        url = url[:-1]
 
-# Save back
-with open("channels.m3u", "w") as f:
-    f.write(data)
+    # Add new token
+    if '?' in url:
+        url = url + '&' + token
+    else:
+        url = url + '?' + token
 
-print("✅ M3U Updated with Token & Cookie")
+    return url
+
+# Apply only on URLs (http/https lines)
+updated_content = re.sub(r'https?://[^\s]+', update_url, content)
+
+# Save updated playlist
+with open("channels.m3u", "w", encoding="utf-8") as f:
+    f.write(updated_content)
+
+print("✅ channels.m3u updated successfully!")
