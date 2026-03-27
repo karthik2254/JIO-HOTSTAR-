@@ -24,13 +24,19 @@ jobs:
           | grep -i set-cookie \
           | head -1 \
           | sed -E 's/.*(hdnea=[^;]+).*/\1/')
-          
+
+          echo "COOKIE=$COOKIE"
           echo "cookie=$COOKIE" >> $GITHUB_OUTPUT
 
-      # 🔄 Update inside M3U
+      # 🔄 Update inside M3U (SAFE REPLACEMENT)
       - name: Update channels.m3u
         run: |
-          sed -i -E "s/hdnea=[^&\"]*/${{ steps.getcookie.outputs.cookie }}/g" channels.m3u
+          COOKIE="${{ steps.getcookie.outputs.cookie }}"
+
+          # Escape special characters for sed
+          SAFE_COOKIE=$(printf '%s\n' "$COOKIE" | sed 's/[\/&]/\\&/g')
+
+          sed -i -E "s/hdnea=[^&\"]*/$SAFE_COOKIE/g" channels.m3u
 
       # 💾 Commit changes
       - name: Commit & Push
@@ -39,5 +45,5 @@ jobs:
           git config --global user.email "bot@users.noreply.github.com"
 
           git add channels.m3u
-          git commit -m "Auto cookie update" || echo "No changes"
+          git commit -m "🔄 Auto cookie update" || echo "No changes"
           git push
