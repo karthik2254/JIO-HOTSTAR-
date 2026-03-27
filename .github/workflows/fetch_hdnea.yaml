@@ -1,4 +1,4 @@
-name: Auto Update HDNEA Token & Cookie
+name: Auto Update HDNEA Token in M3U
 
 on:
   schedule:
@@ -9,66 +9,62 @@ permissions:
   contents: write
 
 jobs:
-  update-token:
+  update-m3u:
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: Enable GitHub Auth
-        run: git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+      - name: Install jq
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.x"
-
-      - name: Download Source M3U & Extract Token + Cookie
+      - name: Fetch HDNEA Token
         env:
-          M3U_URL: ${{ secrets.M3U_URL }}
+          COOKIE_JSON_URL: ${{ secrets.HDNEA_JSON_URL }}
         run: |
 
-          echo "Downloading source playlist..."
-          curl -L -s "$M3U_URL" -o source.m3u
+          echo "Fetching token..."
 
-          echo "Extracting HDNEA token..."
-          token=$(grep -oE '__hdnea__=[^"& ]+' source.m3u | head -n 1)
+          response=$(curl -s "$COOKIE_JSON_URL")
 
-          if [ -z "$token" ]; then
-            echo "❌ Token not found"
+          token=$(echo "$response" | jq -r '.[0].cookie' | sed 's/^__hdnea__=//')
+
+          if [ -z "$token" ] || [ "$token" = "null" ]; then
+            echo "❌ Token fetch failed"
             exit 1
           fi
 
-          echo "$token" > fetch.txt
-          echo "✅ Token: $token"
+          echo "$token" > token.txt
+          echo "✅ Token fetched"
 
-          echo "Extracting Cookie (if available)..."
-          cookie=$(grep -oE 'Cookie:[^"]+' source.m3u | head -n 1 | sed 's/Cookie://')
+      - name: Update M3U File
+        run: |
 
-          if [ -z "$cookie" ]; then
-            echo "⚠️ Cookie not found"
-            echo "" > cookie.txt
-          else
-            echo "$cookie" > cookie.txt
-            echo "✅ Cookie extracted"
-          fi
+          echo "Updating M3U..."
 
-      - name: Update channels.m3u
-        run: python append_hdnea_m3u.py
+          TOKEN=$(cat token.txt)
 
-      - name: Commit & Push Changes
+          # Replace or append token in all stream URLs
+          sed -i "s|__hdnea__=[^&]*|__hdnea__=$TOKEN|g" channels.m3u
+
+          echo "✅ M3U updated"
+
+      - name: Commit & Push
         run: |
 
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
 
-          git add fetch.txt cookie.txt channels.m3u
+          git add channels.m3u
 
           if git diff --cached --quiet; then
             echo "No changes"
             exit 0
           fi
 
-          git commit -m "Auto update HDNEA token & cookie"
+          git commit -m "🔄 Auto update HDNEA token"
           git push
