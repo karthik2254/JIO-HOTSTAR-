@@ -1,4 +1,4 @@
-name: Auto Update Voot M3U
+name: Update Cookie Only
 
 on:
   schedule:
@@ -9,17 +9,26 @@ permissions:
   contents: write
 
 jobs:
-  update:
+  update-cookie:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: Fetch M3U
+      # 🔑 STEP 1: GET NEW COOKIE
+      - name: Fetch Cookie
+        id: cookie
         run: |
-          curl -L "https://voot.vodep39240327.workers.dev?voot.m3u" -o voot.m3u
+          COOKIE=$(curl -I -s "https://voot.vodep39240327.workers.dev" | grep -i 'set-cookie' | head -n 1 | cut -d ';' -f1 | cut -d ' ' -f2)
+          echo "cookie=$COOKIE" >> $GITHUB_OUTPUT
 
+      # 📝 STEP 2: REPLACE COOKIE IN M3U
+      - name: Update Cookie in voot.m3u
+        run: |
+          sed -i "s/Cookie:.*/Cookie: ${{ steps.cookie.outputs.cookie }}/g" voot.m3u
+
+      # 🔍 STEP 3: CHECK CHANGES
       - name: Check Changes
         id: diff
         run: |
@@ -28,8 +37,9 @@ jobs:
           git add voot.m3u
           git diff --cached --quiet || echo "changed=true" >> $GITHUB_OUTPUT
 
+      # 🚀 STEP 4: COMMIT
       - name: Commit & Push
         if: steps.diff.outputs.changed == 'true'
         run: |
-          git commit -m "Auto update voot.m3u"
+          git commit -m "Updated Cookie"
           git push
