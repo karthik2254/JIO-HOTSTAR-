@@ -2,38 +2,25 @@ import re
 
 print("Reading token...")
 
-# Read token
+# Load token
 with open("fetch.txt", "r") as f:
     token = f.read().strip()
 
+if not token.startswith("__hdnea__="):
+    print("Invalid token format")
+    exit(1)
+
 print("Token:", token)
 
-# Read M3U
-with open("channels.m3u", "r") as f:
-    lines = f.readlines()
+# Load M3U
+with open("channels.m3u", "r", encoding="utf-8") as f:
+    content = f.read()
 
-updated_lines = []
-
-for line in lines:
-    line = line.strip()
-
-    if line.startswith("http"):
-        # Remove old token
-        line = re.sub(r'(\?|&)__hdnea__=[^&]*', '', line)
-
-        # Clean trailing ? or &
-        line = re.sub(r'[?&]$', '', line)
-
-        # Add new token
-        if "?" in line:
-            line = line + "&" + token
-        else:
-            line = line + "?" + token
-
-    updated_lines.append(line)
+# Replace all tokens
+updated = re.sub(r"__hdnea__=[^&\s]+", token, content)
 
 # Save file
-with open("channels.m3u", "w") as f:
-    f.write("\n".join(updated_lines))
+with open("channels.m3u", "w", encoding="utf-8") as f:
+    f.write(updated)
 
-print("Updated successfully!")
+print("✅ channels.m3u updated successfully")
