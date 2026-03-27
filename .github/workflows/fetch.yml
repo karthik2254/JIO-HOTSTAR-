@@ -1,4 +1,4 @@
-name: Fetch M3U Playlist
+name: Update Cookie in M3U
 
 on:
   schedule:
@@ -9,26 +9,33 @@ permissions:
   contents: write
 
 jobs:
-  fetch:
+  update-cookie:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: Fetch M3U File
+      # Step 1: Get New Cookie / Token
+      - name: Fetch New Cookie
+        id: cookie
         run: |
-          curl -L "https://voot.vodep39240327.workers.dev/?voot.m3u" -o channels.m3u
+          # Example: extract cookie from API or headers
+          COOKIE=$(curl -sI "https://voot.vodep39240327.workers.dev" | grep -i set-cookie | head -1 | cut -d';' -f1 | cut -d' ' -f2)
+          echo "cookie=$COOKIE" >> $GITHUB_OUTPUT
 
-      - name: Clean M3U (Optional Security)
+      # Step 2: Replace Old Cookie in M3U
+      - name: Update Cookie in M3U
         run: |
-          sed -i 's/http:/https:/g' channels.m3u
+          # Replace old cookie/token parameter in all URLs
+          sed -i "s/hdnea=[^&]*/hdnea=${{ steps.cookie.outputs.cookie }}/g" channels.m3u
 
+      # Step 3: Commit & Push
       - name: Commit & Push
         run: |
-          git config --global user.name "m3u-bot"
+          git config --global user.name "cookie-bot"
           git config --global user.email "bot@users.noreply.github.com"
           
           git add channels.m3u
-          git commit -m "Auto update M3U" || echo "No changes"
+          git commit -m "Updated cookie/token" || echo "No changes"
           git push
