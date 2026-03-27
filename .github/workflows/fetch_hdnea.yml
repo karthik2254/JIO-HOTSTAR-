@@ -17,6 +17,9 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
+      - name: Enable GitHub Auth
+        run: git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
@@ -28,11 +31,10 @@ jobs:
         run: |
 
           echo "Downloading source playlist..."
-          curl -s "$M3U_URL" -o source.m3u
+          curl -L -s "$M3U_URL" -o source.m3u
 
           echo "Extracting token..."
-
-          token=$(grep -o '__hdnea__=[^&]*' source.m3u | head -n 1)
+          token=$(grep -oE '__hdnea__=[^"& ]+' source.m3u | head -n 1)
 
           if [ -z "$token" ]; then
             echo "❌ Token not found"
