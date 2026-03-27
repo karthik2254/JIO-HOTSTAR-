@@ -1,8 +1,8 @@
-name: Update Cookie in channels.m3u
+name: Auto Update M3U Cookie Bot
 
 on:
   schedule:
-    - cron: '*/10 * * * *'   # every 10 minutes
+    - cron: '*/10 * * * *'   # ⏱ every 10 minutes
   workflow_dispatch:
 
 permissions:
@@ -13,35 +13,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repo
+      - name: 📥 Checkout Repo
         uses: actions/checkout@v4
 
-      # 🔑 Get new cookie
-      - name: Get Cookie
-        id: getcookie
+      - name: 🔑 Fetch Cookie
+        id: cookie
         run: |
           COOKIE=$(curl -sI "https://voot.vodep39240327.workers.dev" \
           | grep -i set-cookie \
           | head -1 \
           | sed -E 's/.*(hdnea=[^;]+).*/\1/')
 
-          echo "COOKIE=$COOKIE"
           echo "cookie=$COOKIE" >> $GITHUB_OUTPUT
+          echo "Fetched Cookie: $COOKIE"
 
-      # 🔄 Update inside M3U (SAFE REPLACEMENT)
-      - name: Update channels.m3u
+      - name: 🔄 Update channels.m3u
         run: |
-          COOKIE="${{ steps.getcookie.outputs.cookie }}"
+          COOKIE="${{ steps.cookie.outputs.cookie }}"
 
-          # Escape special characters for sed
+          # Escape special chars
           SAFE_COOKIE=$(printf '%s\n' "$COOKIE" | sed 's/[\/&]/\\&/g')
 
           sed -i -E "s/hdnea=[^&\"]*/$SAFE_COOKIE/g" channels.m3u
 
-      # 💾 Commit changes
-      - name: Commit & Push
+      - name: 💾 Commit & Push
         run: |
-          git config --global user.name "m3u-bot"
+          git config --global user.name "auto-bot"
           git config --global user.email "bot@users.noreply.github.com"
 
           git add channels.m3u
