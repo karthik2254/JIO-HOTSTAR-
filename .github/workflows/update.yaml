@@ -1,4 +1,4 @@
-name: Update Cookie Only
+name: Fetch Cookie Only
 
 on:
   schedule:
@@ -9,35 +9,37 @@ permissions:
   contents: write
 
 jobs:
-  update-cookie:
+  fetch-cookie:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      # 🔑 STEP 1: GET NEW COOKIE
-      - name: Fetch Cookie
+      # 🔑 STEP 1: FETCH COOKIE
+      - name: Get Cookie
         id: cookie
         run: |
-          COOKIE=$(curl -I -s "https://voot.vodep39240327.workers.dev" | grep -i 'set-cookie' | head -n 1 | cut -d ';' -f1 | cut -d ' ' -f2)
+          COOKIE=$(curl -I -s "https://voot.vodep39240327.workers.dev" \
+          -H "User-Agent: Mozilla/5.0" \
+          | grep -i 'set-cookie' \
+          | head -n 1 \
+          | cut -d ';' -f1 \
+          | cut -d ' ' -f2)
+
+          echo "$COOKIE" > cookie.txt
           echo "cookie=$COOKIE" >> $GITHUB_OUTPUT
 
-      # 📝 STEP 2: REPLACE COOKIE IN M3U
-      - name: Update Cookie in voot.m3u
-        run: |
-          sed -i "s/Cookie:.*/Cookie: ${{ steps.cookie.outputs.cookie }}/g" voot.m3u
-
-      # 🔍 STEP 3: CHECK CHANGES
+      # 🔍 STEP 2: CHECK CHANGES
       - name: Check Changes
         id: diff
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git add voot.m3u
+          git add cookie.txt
           git diff --cached --quiet || echo "changed=true" >> $GITHUB_OUTPUT
 
-      # 🚀 STEP 4: COMMIT
+      # 🚀 STEP 3: COMMIT
       - name: Commit & Push
         if: steps.diff.outputs.changed == 'true'
         run: |
