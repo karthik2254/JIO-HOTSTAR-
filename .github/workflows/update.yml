@@ -1,0 +1,54 @@
+name: IPTV Auto Updater
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"   # ⏱ Every 5 minutes
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ✅ Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 📥 Read M3U URL
+        run: |
+          URL=$(cat fetch.txt)
+          echo "M3U_URL=$URL" >> $GITHUB_ENV
+
+      - name: 🌐 Fetch Latest Playlist
+        run: |
+          echo "Fetching from: $M3U_URL"
+          curl -L --retry 3 --connect-timeout 15 "$M3U_URL" -o raw.m3u
+
+      - name: 🍪 Apply Cookie (if exists)
+        run: |
+          COOKIE=$(cat cookie.txt)
+          if [ ! -z "$COOKIE" ]; then
+            echo "#EXTVLCOPT:http-cookie=$COOKIE" > temp.m3u
+            cat raw.m3u >> temp.m3u
+          else
+            cp raw.m3u temp.m3u
+          fi
+
+      - name: 🧹 Clean Playlist (Optional)
+        run: |
+          grep -E "^#EXT|^http" temp.m3u > channels.m3u
+
+      - name: 📊 Show File Info
+        run: |
+          echo "Lines in playlist:"
+          wc -l channels.m3u
+
+      - name: 💾 Commit Changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "[email protected]"
+          git add channels.m3u
+          git commit -m "🔄 Auto Update M3U" || echo "No changes"
+          git push
