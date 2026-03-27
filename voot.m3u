@@ -33,22 +33,22 @@ https://livetv.hotstar.com/mp1/gec-india-hotstartv/3e222014b2524730ad86d0a8457ca
 https://livetv.hotstar.com/mp2/gec-india/60b51adb7eae4ae492e6ba6c156a1efe/index_7.m3u8
 #EXTINF:-1 tvg-logo="https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/7430/567430-h" group-title="VT OTT | Jio Cinema",Star Sports HD1
 #KODIPROP:inputstream.adaptive.license_type=clearkey
-#KODIPROP:inputstream.adaptive.license_key=b7cdde012ce04e90a08b90622e020000:13603245acab444faef6cab5198de55f
+#KODIPROP:inputstream.adaptive.license_key=fe7718fbb3fb4ba78c07cc0f578744e6:624e24b1843b459fab0a949609416f0d
 #EXTVLCOPT:http-user-agent=Hotstar;in.startv.hotstar/25.02.24.8.11169 (Android/15)
 #EXTHTTP:{"Cookie":"hdntl=exp=1774701477~acl=%2f*~id=62ab4603ef9de80e1ab8b82ee5b45f08~data=hdntl~hmac=d1001cefabe6323576879faa5982baf6fa441d7ee2b3be285dd8ab20a41559d8","Origin":"https://www.hotstar.com","Referer":"https://www.hotstar.com/"}
-https://livetv.hotstar.com/mp1/gec-india-1540065782/fce958099ca84fc3b980e651a4a668a8/index.mpd
+https://livetv-push.hotstar.com/dash/live/2002464/sshd1livetvwv/master.mpd
 #EXTINF:-1 tvg-logo="https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/7432/567432-h" group-title="VT OTT | Jio Cinema",Star Sports HD2
 #KODIPROP:inputstream.adaptive.license_type=clearkey
-#KODIPROP:inputstream.adaptive.license_key=9dacc80134404c34ba184022c28d0000:982183fb4d9449c995859b7cff512092
+#KODIPROP:inputstream.adaptive.license_key=fe7718fbb3fb4ba78c07cc0f578744e6:624e24b1843b459fab0a949609416f0d
 #EXTVLCOPT:http-user-agent=Hotstar;in.startv.hotstar/25.02.24.8.11169 (Android/15)
 #EXTHTTP:{"Cookie":"hdntl=exp=1774701477~acl=%2f*~id=62ab4603ef9de80e1ab8b82ee5b45f08~data=hdntl~hmac=d1001cefabe6323576879faa5982baf6fa441d7ee2b3be285dd8ab20a41559d8","Origin":"https://www.hotstar.com","Referer":"https://www.hotstar.com/"}
-https://livetv.hotstar.com/mp2/gec-india-1540065785/a00717b1324f45eb814eec9e48a12db8/index.mpd
+https://livetv-push.hotstar.com/dash/live/2002465/sshd2livetvwv/master.mpd
 #EXTINF:-1 tvg-logo="https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/7433/567433-h" group-title="VT OTT | Jio Cinema",Star Sports Hindi HD1
 #KODIPROP:inputstream.adaptive.license_type=clearkey
-#KODIPROP:inputstream.adaptive.license_key=81872faa1d6b45fa9045cdeb2e310000:9b88168e61274587a471962c46b94675
+#KODIPROP:inputstream.adaptive.license_key=fe7718fbb3fb4ba78c07cc0f578744e6:624e24b1843b459fab0a949609416f0d
 #EXTVLCOPT:http-user-agent=Hotstar;in.startv.hotstar/25.02.24.8.11169 (Android/15)
 #EXTHTTP:{"Cookie":"hdntl=exp=1774701477~acl=%2f*~id=62ab4603ef9de80e1ab8b82ee5b45f08~data=hdntl~hmac=d1001cefabe6323576879faa5982baf6fa441d7ee2b3be285dd8ab20a41559d8","Origin":"https://www.hotstar.com","Referer":"https://www.hotstar.com/"}
-https://livetv.hotstar.com/mp1/gec-india-1540065788/fa6a4f0005ef4f90ab24484d165b0aaf/index.mpd
+https://livetv-push.hotstar.com/dash/live/2002466-b/sshindiwv/master.mpd
 #EXTINF:-1 tvg-logo="https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/7435/567435-h" group-title="VT OTT | Jio Cinema",Star Sports Select HD1
 #KODIPROP:inputstream.adaptive.license_type=clearkey
 #KODIPROP:inputstream.adaptive.license_key=fe7718fbb3fb4ba78c07cc0f578744e6:624e24b1843b459fab0a949609416f0d
@@ -161,67 +161,67 @@ https://jcevents.hotstar.com/bpk-tv/CNBC_Bazaar_voot_MOB/Fallback/CNBC_Bazaar_vo
 #EXTVLCOPT:http-user-agent=Hotstar;in.startv.hotstar/25.02.24.8.11169 (Android/15)
 #EXTHTTP:{"Cookie":"hdntl=exp=1774701477~acl=%2f*~id=62ab4603ef9de80e1ab8b82ee5b45f08~data=hdntl~hmac=d1001cefabe6323576879faa5982baf6fa441d7ee2b3be285dd8ab20a41559d8","Origin":"https://www.hotstar.com","Referer":"https://www.hotstar.com/"}
 https://jcevents.hotstar.com/bpk-tv/CNBC_TV18_voot_MOB/Fallback/CNBC_TV18_voot_MOB.m3u8
-#EXTINF:-1 tvg-logo="https://jiotv.catchup.cdn.jio.com/dare_images/images/IBN_7.png" group-title="VT OTT | Jio Cinema",News18 India
+#EXTINF:-1 tvg-logo="http://jiotv.catchup.cdn.jio.com/dare_images/images/IBN_7.png" group-title="VT OTT | Jio Cinema",News18 India
 #EXTVLCOPT:http-user-agent=Hotstar;in.startv.hotstar/25.02.24.8.11169 (Android/15)
 #EXTHTTP:{"Cookie":"hdntl=exp=1774701477~acl=%2f*~id=62ab4603ef9de80e1ab8b82ee5b45f08~data=hdntl~hmac=d1001cefabe6323576879faa5982baf6fa441d7ee2b3be285dd8ab20a41559d8","Origin":"https://www.hotstar.com","Referer":"https://www.hotstar.com/"}
 https://jcevents.hotstar.com/bpk-tv/News18_India_voot_MOB/Fallback/News18_India_voot_MOB.m3u8
-#EXTINF:-1 tvg-logo="https://jiotv.catchup.cdn.jio.com/dare_images/images/CNN_NEWS_18.png" group-title="VT OTT | Jio Cinema",CNN News18
+#EXTINF:-1 tvg-logo="http://jiotv.catchup.cdn.jio.com/dare_images/images/CNN_NEWS_18.png" group-title="VT OTT | Jio Cinema",CNN News18
 #EXTVLCOPT:http-user-agent=Hotstar;in.startv.hotstar/25.02.24.8.11169 (Android/15)
 #EXTHTTP:{"Cookie":"hdntl=exp=1774701477~acl=%2f*~id=62ab4603ef9de80e1ab8b82ee5b45f08~data=hdntl~hmac=d1001cefabe6323576879faa5982baf6fa441d7ee2b3be285dd8ab20a41559d8","Origin":"https://www.hotstar.com","Referer":"https://www.hotstar.com/"}
 https://jcevents.hotstar.com/bpk-tv/CNN_News18_voot_MOB/Fallback/CNN_News18_voot_MOB.m3u8
-#EXTINF:-1 tvg-logo="https://jiotv.catchup.cdn.jio.com/dare_images/images/News_18_Tamilnadu.png" group-title="VT OTT | Jio Cinema",News18 Tamil Nadu
+#EXTINF:-1 tvg-logo="http://jiotv.catchup.cdn.jio.com/dare_images/images/News_18_Tamilnadu.png" group-title="VT OTT | Jio Cinema",News18 Tamil Nadu
 #EXTVLCOPT:http-user-agent=Hotstar;in.startv.hotstar/25.02.24.8.11169 (Android/15)
 #EXTHTTP:{"Cookie":"hdntl=exp=1774701477~acl=%2f*~id=62ab4603ef9de80e1ab8b82ee5b45f08~data=hdntl~hmac=d1001cefabe6323576879faa5982baf6fa441d7ee2b3be285dd8ab20a41559d8","Origin":"https://www.hotstar.com","Referer":"https://www.hotstar.com/"}
 https://jcevents.hotstar.com/bpk-tv/News18_Tamil_Nadu_voot_MOB/Fallback/News18_Tamil_Nadu_voot_MOB.m3u8
-#EXTINF:-1 tvg-logo="https://jiotv.catchup.cdn.jio.com/dare_images/images/IBN_Lokmat.png" group-title="VT OTT | Jio Cinema",News18 Lokmat
+#EXTINF:-1 tvg-logo="http://jiotv.catchup.cdn.jio.com/dare_images/images/IBN_Lokmat.png" group-title="VT OTT | Jio Cinema",News18 Lokmat
 #EXTVLCOPT:http-user-agent=Hotstar;in.startv.hotstar/25.02.24.8.11169 (Android/15)
 #EXTHTTP:{"Cookie":"hdntl=exp=1774701477~acl=%2f*~id=62ab4603ef9de80e1ab8b82ee5b45f08~data=hdntl~hmac=d1001cefabe6323576879faa5982baf6fa441d7ee2b3be285dd8ab20a41559d8","Origin":"https://www.hotstar.com","Referer":"https://www.hotstar.com/"}
 https://jcevents.hotstar.com/bpk-tv/News18_Lokmat_voot_MOB/Fallback/News18_Lokmat_voot_MOB.m3u8
-#EXTINF:-1 tvg-logo="https://jiotv.catchup.cdn.jio.com/dare_images/images/ETV_Bangla_News.png" group-title="VT OTT | Jio Cinema",News18 Bangla
+#EXTINF:-1 tvg-logo="http://jiotv.catchup.cdn.jio.com/dare_images/images/ETV_Bangla_News.png" group-title="VT OTT | Jio Cinema",News18 Bangla
 #EXTVLCOPT:http-user-agent=Hotstar;in.startv.hotstar/25.02.24.8.11169 (Android/15)
 #EXTHTTP:{"Cookie":"hdntl=exp=1774701477~acl=%2f*~id=62ab4603ef9de80e1ab8b82ee5b45f08~data=hdntl~hmac=d1001cefabe6323576879faa5982baf6fa441d7ee2b3be285dd8ab20a41559d8","Origin":"https://www.hotstar.com","Referer":"https://www.hotstar.com/"}
 https://jcevents.hotstar.com/bpk-tv/News18_Bangla_voot_MOB/Fallback/News18_Bangla_voot_MOB.m3u8
-#EXTINF:-1 tvg-logo="https://jiotv.catchup.cdn.jio.com/dare_images/images/ETV_Kannada_News.png" group-title="VT OTT | Jio Cinema",News18 Kannada
+#EXTINF:-1 tvg-logo="http://jiotv.catchup.cdn.jio.com/dare_images/images/ETV_Kannada_News.png" group-title="VT OTT | Jio Cinema",News18 Kannada
 #EXTVLCOPT:http-user-agent=Hotstar;in.startv.hotstar/25.02.24.8.11169 (Android/15)
 #EXTHTTP:{"Cookie":"hdntl=exp=1774701477~acl=%2f*~id=62ab4603ef9de80e1ab8b82ee5b45f08~data=hdntl~hmac=d1001cefabe6323576879faa5982baf6fa441d7ee2b3be285dd8ab20a41559d8","Origin":"https://www.hotstar.com","Referer":"https://www.hotstar.com/"}
 https://jcevents.hotstar.com/bpk-tv/News18_Kannada_voot_MOB/Fallback/News18_Kannada_voot_MOB.m3u8
-#EXTINF:-1 tvg-logo="https://jiotv.catchup.cdn.jio.com/dare_images/images/ETV_News_Gujarati.png" group-title="VT OTT | Jio Cinema",News18 Gujarati
+#EXTINF:-1 tvg-logo="http://jiotv.catchup.cdn.jio.com/dare_images/images/ETV_News_Gujarati.png" group-title="VT OTT | Jio Cinema",News18 Gujarati
 #EXTVLCOPT:http-user-agent=Hotstar;in.startv.hotstar/25.02.24.8.11169 (Android/15)
 #EXTHTTP:{"Cookie":"hdntl=exp=1774701477~acl=%2f*~id=62ab4603ef9de80e1ab8b82ee5b45f08~data=hdntl~hmac=d1001cefabe6323576879faa5982baf6fa441d7ee2b3be285dd8ab20a41559d8","Origin":"https://www.hotstar.com","Referer":"https://www.hotstar.com/"}
 https://jcevents.hotstar.com/bpk-tv/News18_Gujarati_voot_MOB/Fallback/News18_Gujarati_voot_MOB.m3u8
-#EXTINF:-1 tvg-logo="https://jiotv.catchup.cdn.jio.com/dare_images/images/ETV_Haryana_and_HP_News.png" group-title="VT OTT | Jio Cinema",News18 Punjab Haryana
+#EXTINF:-1 tvg-logo="http://jiotv.catchup.cdn.jio.com/dare_images/images/ETV_Haryana_and_HP_News.png" group-title="VT OTT | Jio Cinema",News18 Punjab Haryana
 #EXTVLCOPT:http-user-agent=Hotstar;in.startv.hotstar/25.02.24.8.11169 (Android/15)
 #EXTHTTP:{"Cookie":"hdntl=exp=1774701477~acl=%2f*~id=62ab4603ef9de80e1ab8b82ee5b45f08~data=hdntl~hmac=d1001cefabe6323576879faa5982baf6fa441d7ee2b3be285dd8ab20a41559d8","Origin":"https://www.hotstar.com","Referer":"https://www.hotstar.com/"}
 https://jcevents.hotstar.com/bpk-tv/News18_Punjab_Haryana_HP_voot_MOB/Fallback/News18_Punjab_Haryana_HP_voot_MOB.m3u8
-#EXTINF:-1 tvg-logo="https://jiotv.catchup.cdn.jio.com/dare_images/images/ETV_News_Oriya.png" group-title="VT OTT | Jio Cinema",News18 Odia
+#EXTINF:-1 tvg-logo="http://jiotv.catchup.cdn.jio.com/dare_images/images/ETV_News_Oriya.png" group-title="VT OTT | Jio Cinema",News18 Odia
 #EXTVLCOPT:http-user-agent=Hotstar;in.startv.hotstar/25.02.24.8.11169 (Android/15)
 #EXTHTTP:{"Cookie":"hdntl=exp=1774701477~acl=%2f*~id=62ab4603ef9de80e1ab8b82ee5b45f08~data=hdntl~hmac=d1001cefabe6323576879faa5982baf6fa441d7ee2b3be285dd8ab20a41559d8","Origin":"https://www.hotstar.com","Referer":"https://www.hotstar.com/"}
 https://jcevents.hotstar.com/bpk-tv/News18_Odia_voot_MOB/Fallback/News18_Odia_voot_MOB.m3u8
-#EXTINF:-1 tvg-logo="https://jiotv.catchup.cdn.jio.com/dare_images/images/News_18_Assam.png" group-title="VT OTT | Jio Cinema",News18 Assam North East
+#EXTINF:-1 tvg-logo="http://jiotv.catchup.cdn.jio.com/dare_images/images/News_18_Assam.png" group-title="VT OTT | Jio Cinema",News18 Assam North East
 #EXTVLCOPT:http-user-agent=Hotstar;in.startv.hotstar/25.02.24.8.11169 (Android/15)
 #EXTHTTP:{"Cookie":"hdntl=exp=1774701477~acl=%2f*~id=62ab4603ef9de80e1ab8b82ee5b45f08~data=hdntl~hmac=d1001cefabe6323576879faa5982baf6fa441d7ee2b3be285dd8ab20a41559d8","Origin":"https://www.hotstar.com","Referer":"https://www.hotstar.com/"}
 https://jcevents.hotstar.com/bpk-tv/News18_Assam_North_East_voot_MOB/Fallback/News18_Assam_North_East_voot_MOB.m3u8
-#EXTINF:-1 tvg-logo="https://jiotv.catchup.cdn.jio.com/dare_images/images/News_18_Kerala.png" group-title="VT OTT | Jio Cinema",News18 Kerala
+#EXTINF:-1 tvg-logo="http://jiotv.catchup.cdn.jio.com/dare_images/images/News_18_Kerala.png" group-title="VT OTT | Jio Cinema",News18 Kerala
 #EXTVLCOPT:http-user-agent=Hotstar;in.startv.hotstar/25.02.24.8.11169 (Android/15)
 #EXTHTTP:{"Cookie":"hdntl=exp=1774701477~acl=%2f*~id=62ab4603ef9de80e1ab8b82ee5b45f08~data=hdntl~hmac=d1001cefabe6323576879faa5982baf6fa441d7ee2b3be285dd8ab20a41559d8","Origin":"https://www.hotstar.com","Referer":"https://www.hotstar.com/"}
 https://jcevents.hotstar.com/bpk-tv/News18_Kerala_voot_MOB/Fallback/News18_Kerala_voot_MOB.m3u8
-#EXTINF:-1 tvg-logo="https://jiotv.catchup.cdn.jio.com/dare_images/images/ETV_RAJASTHAN.png" group-title="VT OTT | Jio Cinema",News18 Rajasthan
+#EXTINF:-1 tvg-logo="http://jiotv.catchup.cdn.jio.com/dare_images/images/ETV_RAJASTHAN.png" group-title="VT OTT | Jio Cinema",News18 Rajasthan
 #EXTVLCOPT:http-user-agent=Hotstar;in.startv.hotstar/25.02.24.8.11169 (Android/15)
 #EXTHTTP:{"Cookie":"hdntl=exp=1774701477~acl=%2f*~id=62ab4603ef9de80e1ab8b82ee5b45f08~data=hdntl~hmac=d1001cefabe6323576879faa5982baf6fa441d7ee2b3be285dd8ab20a41559d8","Origin":"https://www.hotstar.com","Referer":"https://www.hotstar.com/"}
 https://jcevents.hotstar.com/bpk-tv/News18_Rajasthan_voot_MOB/Fallback/News18_Rajasthan_voot_MOB.m3u8
-#EXTINF:-1 tvg-logo="https://jiotv.catchup.cdn.jio.com/dare_images/images/ETV_BIHAR.png" group-title="VT OTT | Jio Cinema",News18 Bihar Jharkhand
+#EXTINF:-1 tvg-logo="http://jiotv.catchup.cdn.jio.com/dare_images/images/ETV_BIHAR.png" group-title="VT OTT | Jio Cinema",News18 Bihar Jharkhand
 #EXTVLCOPT:http-user-agent=Hotstar;in.startv.hotstar/25.02.24.8.11169 (Android/15)
 #EXTHTTP:{"Cookie":"hdntl=exp=1774701477~acl=%2f*~id=62ab4603ef9de80e1ab8b82ee5b45f08~data=hdntl~hmac=d1001cefabe6323576879faa5982baf6fa441d7ee2b3be285dd8ab20a41559d8","Origin":"https://www.hotstar.com","Referer":"https://www.hotstar.com/"}
 https://jcevents.hotstar.com/bpk-tv/News18_Bihar_Jharkhand_voot_MOB/Fallback/News18_Bihar_Jharkhand_voot_MOB.m3u8
-#EXTINF:-1 tvg-logo="https://jiotv.catchup.cdn.jio.com/dare_images/images/ETV_MP.png" group-title="VT OTT | Jio Cinema",News18 MP Chhattisgarh
+#EXTINF:-1 tvg-logo="http://jiotv.catchup.cdn.jio.com/dare_images/images/ETV_MP.png" group-title="VT OTT | Jio Cinema",News18 MP Chhattisgarh
 #EXTVLCOPT:http-user-agent=Hotstar;in.startv.hotstar/25.02.24.8.11169 (Android/15)
 #EXTHTTP:{"Cookie":"hdntl=exp=1774701477~acl=%2f*~id=62ab4603ef9de80e1ab8b82ee5b45f08~data=hdntl~hmac=d1001cefabe6323576879faa5982baf6fa441d7ee2b3be285dd8ab20a41559d8","Origin":"https://www.hotstar.com","Referer":"https://www.hotstar.com/"}
 https://jcevents.hotstar.com/bpk-tv/News18_MP_Chhattisgarh_voot_MOB/Fallback/News18_MP_Chhattisgarh_voot_MOB.m3u8
-#EXTINF:-1 tvg-logo="https://jiotv.catchup.cdn.jio.com/dare_images/images/ETV_UP.png" group-title="VT OTT | Jio Cinema",News18 UP Uttarakhand
+#EXTINF:-1 tvg-logo="http://jiotv.catchup.cdn.jio.com/dare_images/images/ETV_UP.png" group-title="VT OTT | Jio Cinema",News18 UP Uttarakhand
 #EXTVLCOPT:http-user-agent=Hotstar;in.startv.hotstar/25.02.24.8.11169 (Android/15)
 #EXTHTTP:{"Cookie":"hdntl=exp=1774701477~acl=%2f*~id=62ab4603ef9de80e1ab8b82ee5b45f08~data=hdntl~hmac=d1001cefabe6323576879faa5982baf6fa441d7ee2b3be285dd8ab20a41559d8","Origin":"https://www.hotstar.com","Referer":"https://www.hotstar.com/"}
 https://jcevents.hotstar.com/bpk-tv/News18_UP_Uttarakhand_voot_MOB/Fallback/News18_UP_Uttarakhand_voot_MOB.m3u8
-#EXTINF:-1 tvg-logo="https://jiotv.catchup.cdn.jio.com/dare_images/images/ETV_Urdu.png" group-title="VT OTT | Jio Cinema",News18 JKLH
+#EXTINF:-1 tvg-logo="http://jiotv.catchup.cdn.jio.com/dare_images/images/ETV_Urdu.png" group-title="VT OTT | Jio Cinema",News18 JKLH
 #EXTVLCOPT:http-user-agent=Hotstar;in.startv.hotstar/25.02.24.8.11169 (Android/15)
 #EXTHTTP:{"Cookie":"hdntl=exp=1774701477~acl=%2f*~id=62ab4603ef9de80e1ab8b82ee5b45f08~data=hdntl~hmac=d1001cefabe6323576879faa5982baf6fa441d7ee2b3be285dd8ab20a41559d8","Origin":"https://www.hotstar.com","Referer":"https://www.hotstar.com/"}
 https://jcevents.hotstar.com/bpk-tv/News18_Urdu_voot_MOB/Fallback/News18_Urdu_voot_MOB.m3u8
