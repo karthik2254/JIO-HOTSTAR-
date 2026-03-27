@@ -1,4 +1,4 @@
-name: Update Cookie in M3U
+name: Update Cookie in channels.m3u
 
 on:
   schedule:
@@ -16,26 +16,28 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      # Step 1: Get New Cookie / Token
-      - name: Fetch New Cookie
-        id: cookie
+      # 🔑 Step 1: Get New Cookie (Replace this logic if needed)
+      - name: Get Cookie
+        id: getcookie
         run: |
-          # Example: extract cookie from API or headers
-          COOKIE=$(curl -sI "https://voot.vodep39240327.workers.dev" | grep -i set-cookie | head -1 | cut -d';' -f1 | cut -d' ' -f2)
+          COOKIE=$(curl -sI "https://voot.vodep39240327.workers.dev" \
+          | grep -i set-cookie \
+          | head -1 \
+          | sed -E 's/.*(hdnea=[^;]+).*/\1/')
+          
           echo "cookie=$COOKIE" >> $GITHUB_OUTPUT
 
-      # Step 2: Replace Old Cookie in M3U
-      - name: Update Cookie in M3U
+      # 🔄 Step 2: Replace Cookie inside channels.m3u
+      - name: Update channels.m3u
         run: |
-          # Replace old cookie/token parameter in all URLs
-          sed -i "s/hdnea=[^&]*/hdnea=${{ steps.cookie.outputs.cookie }}/g" channels.m3u
+          sed -i -E "s/hdnea=[^&\"]*/${{ steps.getcookie.outputs.cookie }}/g" channels.m3u
 
-      # Step 3: Commit & Push
+      # 💾 Step 3: Commit Changes
       - name: Commit & Push
         run: |
-          git config --global user.name "cookie-bot"
+          git config --global user.name "m3u-bot"
           git config --global user.email "bot@users.noreply.github.com"
-          
+
           git add channels.m3u
-          git commit -m "Updated cookie/token" || echo "No changes"
+          git commit -m "Updated cookie in channels.m3u" || echo "No changes"
           git push
