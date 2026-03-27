@@ -1,46 +1,35 @@
-name: Auto Update M3U Cookie Bot
+name: Auto Update Voot M3U
 
 on:
   schedule:
-    - cron: '*/10 * * * *'   # ⏱ every 10 minutes
+    - cron: "*/10 * * * *"   # every 10 minutes
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  update-cookie:
+  update:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Checkout Repo
+      - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: 🔑 Fetch Cookie
-        id: cookie
+      - name: Fetch M3U
         run: |
-          COOKIE=$(curl -sI "https://voot.vodep39240327.workers.dev" \
-          | grep -i set-cookie \
-          | head -1 \
-          | sed -E 's/.*(hdnea=[^;]+).*/\1/')
+          curl -L "https://voot.vodep39240327.workers.dev?voot.m3u" -o voot.m3u
 
-          echo "cookie=$COOKIE" >> $GITHUB_OUTPUT
-          echo "Fetched Cookie: $COOKIE"
-
-      - name: 🔄 Update channels.m3u
+      - name: Check Changes
+        id: diff
         run: |
-          COOKIE="${{ steps.cookie.outputs.cookie }}"
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add voot.m3u
+          git diff --cached --quiet || echo "changed=true" >> $GITHUB_OUTPUT
 
-          # Escape special chars
-          SAFE_COOKIE=$(printf '%s\n' "$COOKIE" | sed 's/[\/&]/\\&/g')
-
-          sed -i -E "s/hdnea=[^&\"]*/$SAFE_COOKIE/g" channels.m3u
-
-      - name: 💾 Commit & Push
+      - name: Commit & Push
+        if: steps.diff.outputs.changed == 'true'
         run: |
-          git config --global user.name "auto-bot"
-          git config --global user.email "bot@users.noreply.github.com"
-
-          git add channels.m3u
-          git commit -m "🔄 Auto cookie update" || echo "No changes"
+          git commit -m "Auto update voot.m3u"
           git push
