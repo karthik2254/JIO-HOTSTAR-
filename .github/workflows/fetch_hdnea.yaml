@@ -1,70 +1,71 @@
-name: Auto Update HDNEA Token in M3U
+name: Full IPTV Auto Update
 
 on:
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '*/5 * * * *'   # every 5 minutes
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  update-m3u:
+  update-all:
     runs-on: ubuntu-latest
 
     steps:
 
-      - name: Checkout Repo
+      # STEP 1: Checkout Repo
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install jq
+      # STEP 2: Install Tools
+      - name: Install curl & jq
         run: |
           sudo apt-get update
-          sudo apt-get install -y jq
+          sudo apt-get install -y curl jq
 
-      - name: Fetch HDNEA Token
-        env:
-          COOKIE_JSON_URL: ${{ secrets.HDNEA_JSON_URL }}
+      # STEP 3: Fetch Raw Data (SAVE TO fetch.txt)
+      - name: Fetch Data
         run: |
+          curl -s "https://voot.vodep39240327.workers.dev?voot.m3u" > fetch.txt
 
-          echo "Fetching token..."
+      # STEP 4: Extract Token / Cookie (SAVE TO cookie.txt)
+      - name: Extract Cookie
+        run: |
+          TOKEN=$(grep -o 'hdnea=[^"]*' fetch.txt | head -n1)
 
-          response=$(curl -s "$COOKIE_JSON_URL")
-
-          token=$(echo "$response" | jq -r '.[0].cookie' | sed 's/^__hdnea__=//')
-
-          if [ -z "$token" ] || [ "$token" = "null" ]; then
-            echo "❌ Token fetch failed"
-            exit 1
+          # fallback if not found
+          if [ -z "$TOKEN" ]; then
+            TOKEN=$(grep -o 'hdnea=[^&]*' fetch.txt | head -n1)
           fi
 
-          echo "$token" > token.txt
-          echo "✅ Token fetched"
+          echo "$TOKEN" > cookie.txt
 
-      - name: Update M3U File
+      # STEP 5: Generate channels.m3u
+      - name: Create Channels M3U
         run: |
+          TOKEN=$(cat cookie.txt)
 
-          echo "Updating M3U..."
+          cat <<EOF > channels.m3u
+#EXTM3U
 
-          TOKEN=$(cat token.txt)
+#EXTINF:-1 tvg-name="Voot Live",Voot Live
+#EXTVLCOPT:http-user-agent=Mozilla/5.0
+#EXTVLCOPT:http-referrer=https://voot.com/
+#EXTVLCOPT:http-origin=https://voot.com
+#EXTVLCOPT:http-cookie=$TOKEN
 
-          # Replace or append token in all stream URLs
-          sed -i "s|__hdnea__=[^&]*|__hdnea__=$TOKEN|g" channels.m3u
+https://voot.vodep39240327.workers.dev/stream.m3u8?$TOKEN
+EOF
 
-          echo "✅ M3U updated"
-
+      # STEP 6: Commit All Files
       - name: Commit & Push
         run: |
-
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
 
-          git add channels.m3u
+          git add fetch.txt cookie.txt channels.m3u
 
-          if git diff --cached --quiet; then
-            echo "No changes"
-            exit 0
-          fi
+          git commit -m "Auto update all files $(date)" || echo "No changes"
 
-          git commit -m "🔄 Auto update HDNEA token"
           git push
