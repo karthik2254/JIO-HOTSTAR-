@@ -1,47 +1,61 @@
-name: Fetch Cookie Only
+name: Fetch HDNEA Token at Scheduled Times
 
 on:
   schedule:
-    - cron: "*/10 * * * *"   # every 10 minutes
+    - cron: '*/5 * * * *'   # ⏱ Runs every 5 minutes
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  fetch-cookie:
+  fetch-hdnea-token:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repo
+      - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: true
 
-      # 🔑 STEP 1: FETCH COOKIE
-      - name: Get Cookie
-        id: cookie
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Fetch __hdnea__ token (SECURE)
+        env:
+          COOKIE_JSON_URL: ${{ secrets.HDNEA_JSON_URL }}
         run: |
-          COOKIE=$(curl -I -s "https://voot.vodep39240327.workers.dev" \
-          -H "User-Agent: Mozilla/5.0" \
-          | grep -i 'set-cookie' \
-          | head -n 1 \
-          | cut -d ';' -f1 \
-          | cut -d ' ' -f2)
+          echo "::add-mask::$COOKIE_JSON_URL"
 
-          echo "$COOKIE" > cookie.txt
-          echo "cookie=$COOKIE" >> $GITHUB_OUTPUT
+          response=$(curl -fsSL "$COOKIE_JSON_URL")
+          token=$(echo "$response" | jq -r '.[0].cookie' | sed 's/^__hdnea__=//')
 
-      # 🔍 STEP 2: CHECK CHANGES
-      - name: Check Changes
-        id: diff
-        run: |
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
-          git add cookie.txt
-          git diff --cached --quiet || echo "changed=true" >> $GITHUB_OUTPUT
+          if [ -z "$token" ] || [ "$token" = "null" ]; then
+            echo "::error ::Token fetch failed"
+            exit 1
+          fi
 
-      # 🚀 STEP 3: COMMIT
+          echo "__hdnea__=$token" > fetch.txt
+
+      - name: Update channels.m3u
+        run: python append_hdnea_m3u.py
+
       - name: Commit & Push
-        if: steps.diff.outputs.changed == 'true'
         run: |
-          git commit -m "Updated Cookie"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add fetch.txt channels.m3u
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          git commit -m "Auto update HDNEA token in M3U"
           git push
