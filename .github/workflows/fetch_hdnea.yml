@@ -1,69 +1,62 @@
 name: Fetch HDNEA Token at Scheduled Times
 
 on:
-  schedule:
-    - cron: '*/5 * * * *'   # every 5 minutes
-  workflow_dispatch:
+schedule:
+- cron: '*/5 * * * *'   # ⏱ Runs every 5 minutes
+workflow_dispatch:
 
 permissions:
-  contents: write
+contents: write
 
 jobs:
-  fetch-hdnea-token:
-    runs-on: ubuntu-latest
+fetch-hdnea-token:
+runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          persist-credentials: true
+steps:  
+  - name: Checkout Repository  
+    uses: actions/checkout@v4  
+    with:  
+      persist-credentials: true  
 
-      - name: Install jq
-        run: sudo apt-get update && sudo apt-get install -y jq
+  - name: Install jq  
+    run: sudo apt-get update && sudo apt-get install -y jq  
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
+  - name: Set up Python  
+    uses: actions/setup-python@v4  
+    with:  
+      python-version: '3.x'  
 
-      # ✅ FETCH TOKEN
-      - name: Fetch __hdnea__ token
-        env:
-          COOKIE_JSON_URL: ${{ secrets.HDNEA_JSON_URL }}
-        run: |
-          echo "::add-mask::$COOKIE_JSON_URL"
+  - name: Fetch __hdnea__ token (SECURE)  
+    env:  
+      COOKIE_JSON_URL: ${{ secrets.HDNEA_JSON_URL }}  
+    run: |  
+      echo "::add-mask::$COOKIE_JSON_URL"  
 
-          response=$(curl -fsSL "$COOKIE_JSON_URL")
+      response=$(curl -fsSL "$COOKIE_JSON_URL")  
+      token=$(echo "$response" | jq -r '.[0].cookie' | sed 's/^__hdnea__=//')  
 
-          echo "$response" > response.json   # debug file
+      if [ -z "$token" ] || [ "$token" = "null" ]; then  
+        echo "::error ::Token fetch failed"  
+        exit 1  
+      fi  
 
-          token=$(cat response.json | jq -r '.[0].cookie' | sed 's/^__hdnea__=//')
+      echo "__hdnea__=$token" > fetch.txt  
 
-          if [ -z "$token" ] || [ "$token" = "null" ]; then
-            echo "❌ Token fetch failed"
-            cat response.json
-            exit 1
-          fi
+  - name: Update channels.m3u  
+    run: python append_hdnea_m3u.py  
 
-          echo "__hdnea__=$token" > fetch.txt
-          echo "✅ Token fetched successfully"
+  - name: Commit & Push  
+    run: |  
+      git config user.name "github-actions[bot]"  
+      git config user.email "github-actions[bot]@users.noreply.github.com"  
 
-      # ✅ UPDATE M3U
-      - name: Update channels.m3u
-        run: python append_hdnea_m3u.py
+      git add fetch.txt channels.m3u  
 
-      # ✅ COMMIT
-      - name: Commit & Push
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+      if git diff --cached --quiet; then  
+        echo "No changes to commit"  
+        exit 0  
+      fi  
 
-          git add fetch.txt channels.m3u
+      git commit -m "Auto update HDNEA token in M3U"  
+      git push
 
-          if git diff --cached --quiet; then
-            echo "No changes"
-            exit 0
-          fi
-
-          git commit -m "Auto update HDNEA token"
-          git push
