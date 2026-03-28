@@ -2,7 +2,7 @@ name: Fetch HDNEA Token at Scheduled Times
 
 on:
   schedule:
-    - cron: '*/5 * * * *'   # ⏱ Runs every 5 minutes
+    - cron: '*/5 * * * *'   # every 5 minutes
   workflow_dispatch:
 
 permissions:
@@ -26,25 +26,33 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Fetch __hdnea__ token (SECURE)
+      # ✅ FETCH TOKEN
+      - name: Fetch __hdnea__ token
         env:
           COOKIE_JSON_URL: ${{ secrets.HDNEA_JSON_URL }}
         run: |
           echo "::add-mask::$COOKIE_JSON_URL"
 
           response=$(curl -fsSL "$COOKIE_JSON_URL")
-          token=$(echo "$response" | jq -r '.[0].cookie' | sed 's/^__hdnea__=//')
+
+          echo "$response" > response.json   # debug file
+
+          token=$(cat response.json | jq -r '.[0].cookie' | sed 's/^__hdnea__=//')
 
           if [ -z "$token" ] || [ "$token" = "null" ]; then
-            echo "::error ::Token fetch failed"
+            echo "❌ Token fetch failed"
+            cat response.json
             exit 1
           fi
 
           echo "__hdnea__=$token" > fetch.txt
+          echo "✅ Token fetched successfully"
 
+      # ✅ UPDATE M3U
       - name: Update channels.m3u
         run: python append_hdnea_m3u.py
 
+      # ✅ COMMIT
       - name: Commit & Push
         run: |
           git config user.name "github-actions[bot]"
@@ -53,9 +61,9 @@ jobs:
           git add fetch.txt channels.m3u
 
           if git diff --cached --quiet; then
-            echo "No changes to commit"
+            echo "No changes"
             exit 0
           fi
 
-          git commit -m "Auto update HDNEA token in M3U"
+          git commit -m "Auto update HDNEA token"
           git push
