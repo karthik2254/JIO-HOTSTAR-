@@ -1,42 +1,37 @@
-import os
 import re
 
-FETCH_FILE = "fetch.txt"
-M3U_FILE = "channels.m3u"
+# Read token
+with open("fetch.txt", "r") as f:
+    token_line = f.read().strip()
 
-if not os.path.exists(FETCH_FILE):
-    raise FileNotFoundError("fetch.txt not found")
+token = token_line.replace("__hdnea__=", "")
 
-if not os.path.exists(M3U_FILE):
-    raise FileNotFoundError("channels.m3u not found")
+# Read M3U
+with open("channels.m3u", "r") as f:
+    content = f.read()
 
-with open(FETCH_FILE, "r", encoding="utf-8") as f:
-    new_token = f.read().strip()
+# Replace old token or append if missing
+def replace_token(url):
+    if "__hdnea__=" in url:
+        return re.sub(r'__hdnea__=[^&"\']+', f'__hdnea__={token}', url)
+    else:
+        if "?" in url:
+            return url + f"&__hdnea__={token}"
+        else:
+            return url + f"?__hdnea__={token}"
 
-if not new_token.startswith("__hdnea__="):
-    raise ValueError("Invalid HDNEA token")
+# Process all URLs
+lines = content.splitlines()
+new_lines = []
 
-HDNEA_REGEX = r"__hdnea__=st=\d+~exp=\d+~acl=.*?~hmac=[a-f0-9]+"
+for line in lines:
+    if line.startswith("http"):
+        new_lines.append(replace_token(line))
+    else:
+        new_lines.append(line)
 
-updated_lines = []
+# Save updated M3U
+with open("channels.m3u", "w") as f:
+    f.write("\n".join(new_lines))
 
-with open(M3U_FILE, "r", encoding="utf-8") as f:
-    for line in f:
-        original = line.rstrip()
-
-        # Replace old token anywhere in the line
-        updated = re.sub(HDNEA_REGEX, new_token, original)
-
-        # If URL line & no token present, append it
-        if updated.startswith("http") and new_token not in updated:
-            if "?" in updated:
-                updated += f"&{new_token}"
-            else:
-                updated += f"?{new_token}"
-
-        updated_lines.append(updated)
-
-with open(M3U_FILE, "w", encoding="utf-8") as f:
-    f.write("\n".join(updated_lines) + "\n")
-
-print("HDNEA token updated everywhere successfully")
+print("✅ M3U updated successfully")
