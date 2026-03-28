@@ -1,0 +1,74 @@
+name: Fetch HDNEA Token at Scheduled Times
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'   # ⏱ every 5 minutes
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch-hdnea-token:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      # 🔐 Fetch Token Securely
+      - name: Fetch __hdnea__ token (SECURE)
+        env:
+          COOKIE_JSON_URL: ${{ secrets.HDNEA_JSON_URL }}
+        run: |
+          echo "::add-mask::$COOKIE_JSON_URL"
+
+          if [ -z "$COOKIE_JSON_URL" ]; then
+            echo "::error ::Missing secret HDNEA_JSON_URL"
+            exit 1
+          fi
+
+          response=$(curl -fsSL "$COOKIE_JSON_URL")
+
+          echo "$response" > response.json
+
+          token=$(jq -r '.[0].cookie' response.json | sed 's/^__hdnea__=//')
+
+          if [ -z "$token" ] || [ "$token" = "null" ]; then
+            echo "::error ::Token fetch failed"
+            cat response.json
+            exit 1
+          fi
+
+          echo "__hdnea__=$token" > fetch.txt
+
+      # 🧠 Update M3U
+      - name: Update channels.m3u
+        run: |
+          python append_hdnea_m3u.py
+
+      # 🚀 Commit Changes
+      - name: Commit & Push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add fetch.txt channels.m3u
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          git commit -m "Auto update HDNEA token in M3U"
+          git push
