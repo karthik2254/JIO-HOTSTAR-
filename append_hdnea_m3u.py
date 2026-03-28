@@ -1,37 +1,42 @@
+import os
 import re
 
-# Read token
-with open("fetch.txt", "r") as f:
-    token = f.read().strip()
+FETCH_FILE = "fetch.txt"
+M3U_FILE = "channels.m3u"
 
-# Read existing playlist
-with open("channels.m3u", "r", encoding="utf-8") as f:
-    content = f.read()
+if not os.path.exists(FETCH_FILE):
+    raise FileNotFoundError("fetch.txt not found")
 
-# Replace old token or append if missing
-def update_url(match):
-    url = match.group(0)
+if not os.path.exists(M3U_FILE):
+    raise FileNotFoundError("channels.m3u not found")
 
-    # Remove old token if exists
-    url = re.sub(r'__hdnea__=[^&]*', '', url)
+with open(FETCH_FILE, "r", encoding="utf-8") as f:
+    new_token = f.read().strip()
 
-    # Clean trailing symbols
-    if url.endswith('?') or url.endswith('&'):
-        url = url[:-1]
+if not new_token.startswith("__hdnea__="):
+    raise ValueError("Invalid HDNEA token")
 
-    # Add new token
-    if '?' in url:
-        url = url + '&' + token
-    else:
-        url = url + '?' + token
+HDNEA_REGEX = r"__hdnea__=st=\d+~exp=\d+~acl=.*?~hmac=[a-f0-9]+"
 
-    return url
+updated_lines = []
 
-# Apply only on URLs (http/https lines)
-updated_content = re.sub(r'https?://[^\s]+', update_url, content)
+with open(M3U_FILE, "r", encoding="utf-8") as f:
+    for line in f:
+        original = line.rstrip()
 
-# Save updated playlist
-with open("channels.m3u", "w", encoding="utf-8") as f:
-    f.write(updated_content)
+        # Replace old token anywhere in the line
+        updated = re.sub(HDNEA_REGEX, new_token, original)
 
-print("✅ channels.m3u updated successfully!")
+        # If URL line & no token present, append it
+        if updated.startswith("http") and new_token not in updated:
+            if "?" in updated:
+                updated += f"&{new_token}"
+            else:
+                updated += f"?{new_token}"
+
+        updated_lines.append(updated)
+
+with open(M3U_FILE, "w", encoding="utf-8") as f:
+    f.write("\n".join(updated_lines) + "\n")
+
+print("HDNEA token updated everywhere successfully")
