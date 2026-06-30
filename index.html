@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="referrer" content="no-referrer"> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TV4WAP LIVE4WAP </title>
+    <script src="https://content.jwplatform.com/libraries/SAHhwvZq.js"></script>
+
+    <style>   
+        /* Essential Reset */
+        html, body { 
+            margin: 0; 
+            padding: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: #000; 
+            overflow: hidden; 
+            font-family: Arial, sans-serif;
+        } 
+
+        /* Main Container: The anchor for all absolute elements */
+        #player-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+        }
+
+        /* The Player Element */
+        #player {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        /* Overlay: Loading Text */
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 18px;
+            z-index: 10;
+            text-align: center;
+            pointer-events: none; /* Allows clicks to pass through */
+        }
+
+        /* Overlay: Logo */
+        #myLogo {
+            width: 60px;
+            height: auto;
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            z-index: 15; /* Higher than player and loading */
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        /* Responsive aspect ratio constraint for the player */
+        .jwplayer {
+            max-width: 177.78vh !important; /* Forces 16:9 ratio */
+            margin: auto !important;
+        }
+    </style  
+</head>
+<body>
+
+<div id="player-container">
+    
+    
+    <img id="myLogo" src="https://blogger.googleusercontent.com/img/a/AVvXsEiQ92h-ekVYskxW9qCgLvpQVMpAs4tqUQXnH9nDi37JW5B95V7Cq2Rz_mlGO68vTZmA2H5Qp4p8B0I9EUlW-6W1aVOZgITWN3xyE65Hd6G5G_D6HJFxiuXJaK-wMfYD0PiiUR9EBodkzuPH0-ubAMJQK_3F3rpDMEIJKCxlEzNZucpRzsumlBFXWqinGOw=s885" alt="Logo">
+
+    <div id="player"></div>
+</div>
+
+<script>
+    // --- SETTINGS ---
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    // The video you want to play
+    const streamUrl = urlParams.get('url');
+    
+    // The source (can be .json or .m3u)
+    const sourceUrl = urlParams.get('source') || "https://jiotv.diwij76343.workers.dev"; 
+    
+    const keyId = urlParams.get('keyId');
+    const key = urlParams.get('key');
+
+    jwplayer.key = 'XSuP4qMl+9tK17QNb+4+th2Pm9AWgMO/cYH8CI0HGGr7bdjo';
+
+    async function autoResolveCookie() {
+        let finalCookie = "";
+        try {
+            const response = await fetch(sourceUrl);
+            const contentType = response.headers.get("content-type");
+            const textData = await response.text();
+
+            // DETECTION LOGIC
+            if (textData.trim().startsWith('[') || textData.trim().startsWith('{')) {
+                // IT IS JSON
+                console.log("Detected Format: JSON");
+                const jsonData = JSON.parse(textData);
+                const match = jsonData.find(item => streamUrl.includes(item.link) || item.link?.includes(streamUrl));
+                if (match) finalCookie = match.cookie;
+            } 
+            else if (textData.includes("#EXTM3U")) {
+                // IT IS M3U
+                console.log("Detected Format: M3U");
+                const lines = textData.split('\n');
+                for (let i = 0; i < lines.length; i++) {
+                    if (lines[i+1] && lines[i+1].includes(streamUrl)) {
+                        const m = lines[i].match(/"cookie":"([^"]+)"/);
+                        if (m) { finalCookie = m[1]; break; }
+                    }
+                }
+            }
+        } catch (e) {
+            console.error("Auto-resolve failed", e);
+        }
+        return finalCookie;
+    }
+
+    async function start() {
+        const cookie = await autoResolveCookie();
+
+        // XHR Interceptor
+        const originalOpen = XMLHttpRequest.prototype.open;
+        XMLHttpRequest.prototype.open = function(method, url) {
+            if (url && (url.includes('jio') || url.includes('.mpd'))) {
+                const sep = url.includes('?') ? '&' : '?';
+                if (cookie && !url.includes('__hdnea__')) {
+                    url += sep + cookie;
+                }
+            }
+            return originalOpen.apply(this, arguments);
+        };
+
+        // Player Setup
+        jwplayer("player").setup({
+            playlist: [{
+                file: streamUrl,
+                type: "dash",
+                image: "https://blogger.googleusercontent.com/img/a/AVvXsEiGqaZeRBZ6Y7yV5ZYSRiNRhBa5q9_EMx7R5TJcHd3XJwwHh2YhNOGt76Y4vEcUIjvIaA7W-Tw1RyMLP-4WZwVHA4mk18zwXl7HdSL5WabprIasDOWJO7jpL0zTQB4p_y7X0Rv0xwe-cJ-GvxofAgeRp2FIiNgB90n_b8Cqw0sAaZqVhJg_fi9UyfSO8KY",
+                drm: { clearkey: { keyId: keyId, key: key } }
+            }],
+            width: "100%", height: "100%",
+            autostart: true
+        }).on('ready', () => {
+            document.getElementById('status').style.display = 'none';
+        }).on('error', e => {
+            document.getElementById('status').innerText = "Error: " + e.message;
+        });
+    }
+
+    start();
+</script>
+</body>
+</html>
