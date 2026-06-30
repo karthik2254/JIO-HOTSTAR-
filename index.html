@@ -86,7 +86,7 @@
     const streamUrl = urlParams.get('url');
     
     // The source (can be .json or .m3u)
-    const sourceUrl = urlParams.get('source') || "https://jiotv.diwij76343.workers.dev"; 
+    const sourceUrl = urlParams.get('source') || "https://wispy-wave-3131.diwij76343.workers.dev"; 
     
     const keyId = urlParams.get('keyId');
     const key = urlParams.get('key');
@@ -131,7 +131,7 @@
         // XHR Interceptor
         const originalOpen = XMLHttpRequest.prototype.open;
         XMLHttpRequest.prototype.open = function(method, url) {
-            if (url && (url.includes('jio') || url.includes('.mpd'))) {
+          if (url && (url.includes('jio') || url.includes('.mpd'))) {
                 const sep = url.includes('?') ? '&' : '?';
                 if (cookie && !url.includes('__hdnea__')) {
                     url += sep + cookie;
